@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Generator - Musical Timing & Time Utilities</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="time-mobile.css">
+    <style>
+        /* Time Generator Theme */
+        .tool-subtitle {
+            color: #667eea;
+        }
+    </style>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #e0e0e0;
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .site-nav {
+            border-bottom: 1px solid #222;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+        }
+
+        .nav-links a.current {
+            color: #fff;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 5em;
+            font-weight: 700;
+            letter-spacing: 8px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            font-weight: 300;
+            color: #ccc;
+            letter-spacing: 2px;
+        }
+
+        .tool-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .tool-header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .tool-subtitle {
+            font-size: 1.2em;
+            color: #999;
+            margin-bottom: 20px;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 1.1em;
+            color: #888;
+            font-weight: 300;
+        }
+
+        .time-display {
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .current-time {
+            font-size: 4em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .time-zones {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .timezone {
+            text-align: center;
+        }
+
+        .tz-name {
+            font-size: 0.8em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .tz-time {
+            font-size: 1.2em;
+            color: #ccc;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tool-section {
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .tool-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #1a3535;
+            border-radius: 6px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1em;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #333;
+            border-color: #666;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85em;
+        }
+
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .output-item {
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 6px;
+            padding: 15px 60px 15px 15px;
+            position: relative;
+        }
+
+        .output-label {
+            font-size: 0.8em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .output-value {
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #fff;
+            font-size: 1.1em;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 4px;
+            color: #00ff88;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .copy-btn.copied {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #000;
+            border-color: #00ff88;
+        }
+
+        .beat-display {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .beat-box {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .beat-box.active {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            border-color: #00ff88;
+            transform: scale(1.1);
+        }
+
+        .planet-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .planet-card {
+            background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+            border: 1px solid #1a3535;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .planet-card:hover {
+            border-color: #00ff88;
+            transform: translateY(-2px);
+        }
+
+        .planet-name {
+            font-size: 1.2em;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .planet-time {
+            font-size: 1em;
+            color: #888;
+            font-variant-numeric: tabular-nums;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px 20px;
+            color: #555;
+            font-size: 0.9em;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+        }
+
+        .footer-logo {
+            width: 30px;
+            height: 30px;
+            filter: invert(0.4);
+            opacity: 0.6;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .current-time {
+                font-size: 2.5em;
+            }
+
+            .time-zones {
+                gap: 20px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            input[type="date"],
+            select {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tool-header">
+            <h1>Time Generator</h1>
+            <p class="tool-subtitle">Musical timing, timestamps, and time conversion</p>
+        </div>
+
+        <div class="time-display">
+            <div class="current-time" id="currentTime">00:00:00</div>
+            <div class="time-zones">
+                <div class="timezone">
+                    <div class="tz-name">UTC</div>
+                    <div class="tz-time" id="utcTime">00:00</div>
+                </div>
+                <div class="timezone">
+                    <div class="tz-name">NYC</div>
+                    <div class="tz-time" id="nycTime">00:00</div>
+                </div>
+                <div class="timezone">
+                    <div class="tz-name">Tokyo</div>
+                    <div class="tz-time" id="tokyoTime">00:00</div>
+                </div>
+                <div class="timezone">
+                    <div class="tz-name">Vegas</div>
+                    <div class="tz-time" id="vegasTime">00:00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Musical Time Section -->
+        <div class="tool-section">
+            <h2>🎵 Musical Time Generator</h2>
+            
+            <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TEMPO</div>
+                    <input type="number" id="bpmInput" placeholder="120" value="120" min="1" max="300" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.3em; width: 100px; text-align: center;">
+                    <div style="color: #666; font-size: 0.9em; margin-top: 5px;">BPM</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TIME SIGNATURE</div>
+                    <select id="timeSignature" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em;">
+                        <option value="4/4">4/4</option>
+                        <option value="3/4">3/4</option>
+                        <option value="2/4">2/4</option>
+                        <option value="6/8">6/8</option>
+                        <option value="12/8">12/8</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <button class="btn" onclick="calculateMusicalTime()">Calculate Musical Time</button>
+                <button class="btn" onclick="startMetronome()">Start Metronome</button>
+                <button class="btn" onclick="stopMetronome()">Stop</button>
+            </div>
+            
+            <div class="output-grid" id="musicalOutput"></div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <div style="color: #888; margin-bottom: 15px; font-size: 0.9em;">VISUAL METRONOME</div>
+                <div class="beat-display" id="beatDisplay">
+                    <div class="beat-box">1</div>
+                    <div class="beat-box">2</div>
+                    <div class="beat-box">3</div>
+                    <div class="beat-box">4</div>
+                </div>
+                <div style="margin-top: 15px; color: #666; font-size: 0.9em;" id="tempoMarking">Moderato</div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h2>Unix Timestamp Converter</h2>
+            <div class="input-group">
+                <input type="text" id="unixInput" placeholder="1234567890 or 'now'">
+                <button class="btn" onclick="convertUnixTime()">Convert</button>
+                <button class="btn" onclick="setCurrentUnix()">Now</button>
+            </div>
+            <div class="output-grid" id="unixOutput"></div>
+        </div>
+
+        <div class="tool-section">
+            <h2>Global Time Converter</h2>
+            
+            <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">DATE</div>
+                    <input type="date" id="tzDate" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em;">
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TIME</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <select id="tzHour" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                        <span style="color: #666; font-size: 1.5em;">:</span>
+                        <select id="tzMinute" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <button class="btn" onclick="convertTimezones()">Convert to All Timezones</button>
+                <button class="btn" onclick="setCurrentTz()">Now</button>
+            </div>
+            <div class="output-grid" id="timezoneOutput"></div>
+        </div>
+
+        <div class="tool-section">
+            <h2>Discord Timestamp Generator</h2>
+            
+            <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">DATE</div>
+                    <input type="date" id="discordDate" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em;">
+                </div>
+                
+                <div style="text-align: center;">
+                    <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TIME</div>
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <select id="discordHour" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                        <span style="color: #666; font-size: 1.5em;">:</span>
+                        <select id="discordMinute" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <button class="btn" onclick="generateDiscordTimestamp()">Generate All Formats</button>
+                <button class="btn" onclick="setCurrentDiscord()">Now</button>
+            </div>
+            <div class="output-grid" id="discordOutput"></div>
+        </div>
+
+        <div class="tool-section">
+            <h2>🌍 Planetary & Alternative Time</h2>
+            
+            <div class="planet-times">
+                <div class="planet-card">
+                    <div class="planet-name">Mars Sol</div>
+                    <div class="planet-time" id="marsSol">Sol 0</div>
+                </div>
+                <div class="planet-card">
+                    <div class="planet-name">Venus Day</div>
+                    <div class="planet-time" id="venusDay">Day 0</div>
+                </div>
+                <div class="planet-card">
+                    <div class="planet-name">Jupiter Day</div>
+                    <div class="planet-time" id="jupiterDay">00:00</div>
+                </div>
+                <div class="planet-card">
+                    <div class="planet-name">Internet Time</div>
+                    <div class="planet-time" id="internetTime">@000</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h2>⏰ Interactive Countdown Generator</h2>
+            
+            <div style="margin-bottom: 30px;">
+                <div style="color: #888; margin-bottom: 15px; font-size: 0.9em; text-align: center;">QUICK PRESETS</div>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn" onclick="setCountdown('defcon')">DefCon 2025</button>
+                    <button class="btn" onclick="setCountdown('newyear')">New Year</button>
+                    <button class="btn" onclick="setCountdown('birthday')">Clarke's Birthday</button>
+                    <button class="btn" onclick="setCountdown('christmas')">Christmas</button>
+                    <button class="btn" onclick="setCountdown('custom')">Custom Date</button>
+                </div>
+            </div>
+
+            <div id="customCountdownPicker" style="display: none; margin-bottom: 30px;">
+                <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;">
+                    <div style="text-align: center;">
+                        <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TARGET DATE</div>
+                        <input type="date" id="countdownDate" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em;">
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">TARGET TIME</div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="countdownHour" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                            <span style="color: #666; font-size: 1.5em;">:</span>
+                            <select id="countdownMinute" style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 70px;"></select>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <input type="text" id="countdownTitle" placeholder="Event name..." style="padding: 12px; background: #000; border: 1px solid #333; border-radius: 6px; color: #fff; font-size: 1.1em; width: 300px; text-align: center;">
+                </div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="btn" onclick="generateCustomCountdown()">Create Countdown</button>
+                </div>
+            </div>
+
+            <div id="countdownDisplay" style="background: #111; border: 1px solid #333; border-radius: 12px; padding: 40px; text-align: center; margin-bottom: 30px;">
+                <div id="countdownEventName" style="font-size: 1.5em; color: #888; margin-bottom: 20px;">Select a countdown above</div>
+                <div id="countdownValue" style="font-size: 3em; font-weight: 700; color: #fff; margin-bottom: 20px; font-variant-numeric: tabular-nums;">--:--:--</div>
+                <div id="countdownDetails" style="color: #666; font-size: 1em;">Ready to countdown</div>
+            </div>
+
+            <div id="htmlExport" style="display: none;">
+                <div style="color: #888; margin-bottom: 10px; font-size: 0.9em;">EMBEDDABLE HTML CODE</div>
+                <div style="background: #000; border: 1px solid #444; border-radius: 4px; padding: 15px; margin-bottom: 15px;">
+                    <textarea id="htmlCode" readonly style="width: 100%; height: 150px; background: transparent; border: none; color: #4f4; font-family: 'Monaco', 'Consolas', monospace; font-size: 0.9em; resize: vertical; outline: none;"></textarea>
+                </div>
+                <button class="btn" onclick="copyCountdownHTML()">Copy HTML Code</button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Time Generator — Client-side time utilities • Privacy-first • Open source</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                <a href="https://github.com/clarkezyz/time-generator" target="_blank" style="color: #667eea; text-decoration: none; transition: color 0.3s ease;">GitHub</a>
+                <span style="color: #666; margin: 0 8px;">•</span>
+                <span style="color: #666;">Built by Clarke Zyz</span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Load JavaScript modules -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/musical-time.js"></script>
+    <script src="scripts/countdown.js"></script>
+    
+    <!-- ZYZ DYNAMICS Mobile Enhancements -->
+    <script src="../../mobile-enhancements.js"></script>
+    
+    <script>
+        // Main Time Display & Core Functions
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-US', { hour12: false });
+            document.getElementById('currentTime').textContent = timeStr;
+
+            const utc = new Date(now.toUTCString());
+            document.getElementById('utcTime').textContent = utc.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            const nyc = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+            document.getElementById('nycTime').textContent = nyc.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            const tokyo = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Tokyo"}));
+            document.getElementById('tokyoTime').textContent = tokyo.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            const vegas = new Date(now.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+            document.getElementById('vegasTime').textContent = vegas.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            updateImpossibleTime();
+        }
+
+        // Unix timestamp converter
+        function convertUnixTime() {
+            const input = document.getElementById('unixInput').value.trim();
+            const output = document.getElementById('unixOutput');
+            output.innerHTML = '';
+
+            let timestamp;
+            if (input.toLowerCase() === 'now') {
+                timestamp = Math.floor(Date.now() / 1000);
+            } else {
+                timestamp = parseInt(input);
+                if (isNaN(timestamp)) {
+                    output.innerHTML = '<div class="output-item"><span class="output-label">Error</span><span class="output-value">Invalid timestamp</span></div>';
+                    return;
+                }
+            }
+
+            const date = new Date(timestamp * 1000);
+            const formats = [
+                { label: 'Unix Timestamp', value: timestamp },
+                { label: 'ISO 8601', value: date.toISOString() },
+                { label: 'RFC 2822', value: date.toUTCString() },
+                { label: 'Local Time', value: date.toLocaleString() },
+                { label: 'Relative', value: getRelativeTime(date) },
+                { label: 'Milliseconds', value: timestamp * 1000 }
+            ];
+
+            formats.forEach(format => {
+                output.innerHTML += createOutputItem(format.label, format.value);
+            });
+        }
+
+        function setCurrentUnix() {
+            document.getElementById('unixInput').value = Math.floor(Date.now() / 1000);
+            convertUnixTime();
+        }
+
+        // Discord timestamp generator
+        function generateDiscordTimestamp() {
+            const date = document.getElementById('discordDate').value;
+            const hour = document.getElementById('discordHour').value;
+            const minute = document.getElementById('discordMinute').value;
+            const output = document.getElementById('discordOutput');
+            output.innerHTML = '';
+
+            if (!date || hour === '' || minute === '') {
+                output.innerHTML = '<div class="output-item"><span class="output-label">Error</span><span class="output-value">Please select date and time</span></div>';
+                return;
+            }
+
+            const datetime = new Date(`${date}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`);
+            const timestamp = Math.floor(datetime.getTime() / 1000);
+            
+            const discordFormats = [
+                { label: 'Short Time', format: 't', description: 'H:MM AM/PM' },
+                { label: 'Long Time', format: 'T', description: 'H:MM:SS AM/PM' },
+                { label: 'Short Date', format: 'd', description: 'MM/DD/YYYY' },
+                { label: 'Long Date', format: 'D', description: 'Month DD, YYYY' },
+                { label: 'Short Date/Time', format: 'f', description: 'Month DD, YYYY H:MM AM/PM' },
+                { label: 'Long Date/Time', format: 'F', description: 'Day, Month DD, YYYY H:MM AM/PM' },
+                { label: 'Relative Time', format: 'R', description: 'X minutes/hours/days ago' }
+            ];
+
+            discordFormats.forEach(item => {
+                const discordCode = `<t:${timestamp}:${item.format}>`;
+                output.innerHTML += createDiscordOutputItem(item.label, item.description, discordCode, datetime, item.format);
+            });
+            
+            output.innerHTML += createOutputItem('Unix Timestamp', timestamp);
+        }
+
+        function createDiscordOutputItem(label, description, discordCode, actualDate, format) {
+            let preview = '';
+            switch(format) {
+                case 't': preview = actualDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); break;
+                case 'T': preview = actualDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }); break;
+                case 'd': preview = actualDate.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' }); break;
+                case 'D': preview = actualDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); break;
+                case 'f': preview = actualDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ' ' + actualDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); break;
+                case 'F': preview = actualDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' ' + actualDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); break;
+                case 'R': 
+                    const now = new Date();
+                    const diff = Math.floor((actualDate - now) / 1000);
+                    if (Math.abs(diff) < 60) preview = 'in a few seconds';
+                    else if (Math.abs(diff) < 3600) preview = `in ${Math.floor(Math.abs(diff)/60)} minutes`;
+                    else if (Math.abs(diff) < 86400) preview = `in ${Math.floor(Math.abs(diff)/3600)} hours`;
+                    else preview = `in ${Math.floor(Math.abs(diff)/86400)} days`;
+                    if (diff < 0) preview = preview.replace('in ', '') + ' ago';
+                    break;
+            }
+
+            return `
+                <div class="output-item">
+                    <span class="output-label">${label}</span>
+                    <div style="margin-bottom: 8px;">
+                        <div style="background: #000; border: 1px solid #444; border-radius: 4px; padding: 8px; margin-bottom: 8px;">
+                            <div style="color: #4f4; font-family: 'Monaco', 'Consolas', monospace; font-size: 1.1em; user-select: all;">${discordCode.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+                        </div>
+                        <div style="color: #888; font-size: 0.9em;">Discord shows: ${preview}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('${discordCode.replace(/'/g, "\\'")}', this)">Copy</button>
+                </div>
+            `;
+        }
+
+        function setCurrentDiscord() {
+            const now = new Date();
+            document.getElementById('discordDate').value = now.toISOString().slice(0, 10);
+            document.getElementById('discordHour').value = now.getHours();
+            document.getElementById('discordMinute').value = now.getMinutes();
+            generateDiscordTimestamp();
+        }
+
+        // Timezone converter
+        function convertTimezones() {
+            const date = document.getElementById('tzDate').value;
+            const hour = document.getElementById('tzHour').value;
+            const minute = document.getElementById('tzMinute').value;
+            const output = document.getElementById('timezoneOutput');
+            output.innerHTML = '';
+
+            if (!date || hour === '' || minute === '') {
+                output.innerHTML = '<div class="output-item"><span class="output-label">Error</span><span class="output-value">Please select date and time</span></div>';
+                return;
+            }
+
+            const datetime = new Date(`${date}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00`);
+            
+            const timezones = [
+                { name: 'UTC', tz: 'UTC', cities: 'London, Reykjavik', flag: '🌍' },
+                { name: 'Eastern', tz: 'America/New_York', cities: 'NYC, Miami, Toronto', flag: '🇺🇸' },
+                { name: 'Central', tz: 'America/Chicago', cities: 'Chicago, Dallas, Mexico City', flag: '🇺🇸' },
+                { name: 'Mountain', tz: 'America/Denver', cities: 'Denver, Phoenix, Calgary', flag: '🇺🇸' },
+                { name: 'Pacific', tz: 'America/Los_Angeles', cities: 'LA, SF, Seattle, Vegas', flag: '🇺🇸' },
+                { name: 'Alaska', tz: 'America/Anchorage', cities: 'Anchorage, Fairbanks', flag: '🇺🇸' },
+                { name: 'Hawaii', tz: 'Pacific/Honolulu', cities: 'Honolulu, Hilo', flag: '🇺🇸' },
+                { name: 'Central Europe', tz: 'Europe/Paris', cities: 'Paris, Berlin, Rome, Madrid', flag: '🇪🇺' },
+                { name: 'Eastern Europe', tz: 'Europe/Kiev', cities: 'Kiev, Helsinki, Athens', flag: '🇪🇺' },
+                { name: 'Moscow', tz: 'Europe/Moscow', cities: 'Moscow, St. Petersburg', flag: '🇷🇺' },
+                { name: 'India', tz: 'Asia/Kolkata', cities: 'Mumbai, Delhi, Bangalore', flag: '🇮🇳' },
+                { name: 'China', tz: 'Asia/Shanghai', cities: 'Shanghai, Beijing, Hong Kong', flag: '🇨🇳' },
+                { name: 'Japan', tz: 'Asia/Tokyo', cities: 'Tokyo, Osaka, Kyoto', flag: '🇯🇵' },
+                { name: 'Korea', tz: 'Asia/Seoul', cities: 'Seoul, Busan', flag: '🇰🇷' },
+                { name: 'Australia East', tz: 'Australia/Sydney', cities: 'Sydney, Melbourne, Brisbane', flag: '🇦🇺' },
+                { name: 'Australia Central', tz: 'Australia/Adelaide', cities: 'Adelaide, Darwin', flag: '🇦🇺' },
+                { name: 'Australia West', tz: 'Australia/Perth', cities: 'Perth', flag: '🇦🇺' },
+                { name: 'New Zealand', tz: 'Pacific/Auckland', cities: 'Auckland, Wellington', flag: '🇳🇿' },
+                { name: 'Brazil', tz: 'America/Sao_Paulo', cities: 'São Paulo, Rio, Brasília', flag: '🇧🇷' },
+                { name: 'Argentina', tz: 'America/Buenos_Aires', cities: 'Buenos Aires, Córdoba', flag: '🇦🇷' }
+            ];
+
+            timezones.forEach(tz => {
+                try {
+                    const converted = new Date(datetime.toLocaleString("en-US", {timeZone: tz.tz}));
+                    const timeStr = converted.toLocaleString('en-US', { 
+                        weekday: 'short',
+                        month: 'short', 
+                        day: 'numeric',
+                        hour: 'numeric', 
+                        minute: '2-digit',
+                        hour12: true 
+                    });
+                    output.innerHTML += createTimezoneOutputItem(tz.name, tz.cities, tz.flag, timeStr);
+                } catch (error) {
+                    console.error(`Error converting timezone ${tz.tz}:`, error);
+                }
+            });
+        }
+
+        function createTimezoneOutputItem(name, cities, flag, timeStr) {
+            return `
+                <div class="output-item">
+                    <span class="output-label">${flag} ${name}</span>
+                    <div style="margin-bottom: 8px;">
+                        <div style="color: #fff; font-family: 'Monaco', 'Consolas', monospace; font-size: 1.3em; margin-bottom: 4px;">${timeStr}</div>
+                        <div style="color: #888; font-size: 0.85em;">${cities}</div>
+                    </div>
+                    <button class="copy-btn" onclick="copyToClipboard('${timeStr.replace(/'/g, "\\'")}', this)">Copy</button>
+                </div>
+            `;
+        }
+
+        function setCurrentTz() {
+            const now = new Date();
+            document.getElementById('tzDate').value = now.toISOString().slice(0, 10);
+            document.getElementById('tzHour').value = now.getHours();
+            document.getElementById('tzMinute').value = now.getMinutes();
+            convertTimezones();
+        }
+
+        // Impossible time functions
+        function updateImpossibleTime() {
+            const now = new Date();
+            const marsStart = new Date('2000-01-01T00:00:00Z');
+            const marsDiff = now - marsStart;
+            const solLength = 24 * 60 * 60 * 1000 + 39 * 60 * 1000 + 35 * 1000;
+            const sol = Math.floor(marsDiff / solLength);
+            const solTime = (marsDiff % solLength) / solLength;
+            const marsHour = Math.floor(solTime * 24);
+            const marsMin = Math.floor((solTime * 24 - marsHour) * 60);
+            document.getElementById('marsSol').textContent = `Sol ${sol}, ${marsHour.toString().padStart(2, '0')}:${marsMin.toString().padStart(2, '0')}`;
+
+            const venusLength = 243 * 24 * 60 * 60 * 1000;
+            const venusDay = Math.floor(marsDiff / venusLength);
+            document.getElementById('venusDay').textContent = `Day ${venusDay}`;
+
+            const jupiterLength = 9 * 60 * 60 * 1000 + 56 * 60 * 1000;
+            const jupiterTime = (marsDiff % jupiterLength) / jupiterLength;
+            const jupiterHour = Math.floor(jupiterTime * 10);
+            const jupiterMin = Math.floor((jupiterTime * 10 - jupiterHour) * 60);
+            document.getElementById('jupiterDay').textContent = `${jupiterHour}:${jupiterMin.toString().padStart(2, '0')}`;
+
+            const utcHours = now.getUTCHours();
+            const utcMinutes = now.getUTCMinutes();
+            const utcSeconds = now.getUTCSeconds();
+            const totalSeconds = (utcHours + 1) * 3600 + utcMinutes * 60 + utcSeconds;
+            const beats = Math.floor((totalSeconds / 86400) * 1000);
+            document.getElementById('internetTime').textContent = `@${beats.toString().padStart(3, '0')}`;
+        }
+
+        // Initialize everything
+        setInterval(updateCurrentTime, 1000);
+        updateCurrentTime();
+
+        populateTimeSelectors('discordHour', 'discordMinute');
+        populateTimeSelectors('tzHour', 'tzMinute');
+        populateCountdownSelectors();
+
+        const now = new Date();
+        
+        document.getElementById('discordDate').value = now.toISOString().slice(0, 10);
+        document.getElementById('discordHour').value = now.getHours();
+        document.getElementById('discordMinute').value = now.getMinutes();
+        
+        document.getElementById('tzDate').value = now.toISOString().slice(0, 10);
+        document.getElementById('tzHour').value = now.getHours();
+        document.getElementById('tzMinute').value = now.getMinutes();
+        
+        document.getElementById('countdownDate').value = now.toISOString().slice(0, 10);
+        document.getElementById('countdownHour').value = now.getHours();
+        document.getElementById('countdownMinute').value = now.getMinutes();
+
+        calculateMusicalTime();
+    </script>
+</body>
+</html>

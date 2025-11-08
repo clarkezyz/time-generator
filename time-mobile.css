@@ -1,0 +1,660 @@
+/**
+ * Time Machine Mobile Enhancements  
+ * Optimizes universal time utilities for quick mobile operations
+ * 
+ * Perfect for Discord timestamps, timezone conversions, and countdown generation on mobile
+ */
+
+@media (max-width: 768px) {
+    
+    /* ============================================
+       MOBILE LAYOUT OPTIMIZATION
+       ============================================ */
+    
+    .time-interface {
+        gap: 20px !important;
+    }
+    
+    /* ============================================
+       MOBILE CURRENT TIME DISPLAY
+       ============================================ */
+    
+    .current-time-section {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        border: 1px solid #1a3535 !important;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .current-time {
+        font-size: 2.2em !important;
+        font-weight: 700;
+        color: #00ff88;
+        margin-bottom: 8px;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .current-date {
+        font-size: 1.1em !important;
+        color: #ccc;
+        margin-bottom: 12px;
+    }
+    
+    .timezone-info {
+        font-size: 0.95em !important;
+        color: #888;
+        background: #0a0a0a;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: inline-block;
+    }
+    
+    /* ============================================
+       MOBILE SELECT OVERFLOW FIXES  
+       ============================================ */
+    
+    /* Override inline styles that cause mobile overflow */
+    select[style*="width"] {
+        width: auto !important;
+        min-width: 60px !important;
+        max-width: 80px !important;
+        flex-shrink: 1 !important;
+        box-sizing: border-box !important;
+        min-height: 44px !important;
+        font-size: 16px !important;
+        padding: 8px 12px !important;
+        touch-action: manipulation;
+    }
+    
+    /* General mobile select improvements */
+    select {
+        min-height: 44px !important;
+        padding: 8px 12px !important;
+        font-size: 16px !important;
+        border: 2px solid #1a3535 !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+        box-sizing: border-box !important;
+        touch-action: manipulation;
+    }
+
+    select:focus {
+        border-color: #00ff88 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2) !important;
+    }
+    
+    /* Ensure all containers can contain their children */
+    .time-input-group,
+    .discord-time-inputs,
+    .countdown-inputs,
+    .timezone-inputs {
+        display: flex !important;
+        gap: 8px !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+    }
+    
+    /* Make time input labels and selects responsive */
+    .time-input-group label,
+    .discord-time-inputs label,
+    .countdown-inputs label {
+        white-space: nowrap !important;
+        margin-right: 8px !important;
+        flex-shrink: 0 !important;
+        font-size: 0.9em !important;
+        color: #ccc !important;
+    }
+    
+    /* Mobile input improvements */
+    input[type="number"], input[type="text"] {
+        min-height: 44px !important;
+        padding: 8px 12px !important;
+        font-size: 16px !important;
+        border: 2px solid #1a3535 !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+        box-sizing: border-box !important;
+        touch-action: manipulation;
+        flex-shrink: 1 !important;
+        max-width: 120px !important;
+    }
+
+    input[type="number"]:focus, input[type="text"]:focus {
+        border-color: #00ff88 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2) !important;
+    }
+    
+    /* ============================================
+       MOBILE TIME MODE SELECTOR
+       ============================================ */
+    
+    .time-modes {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%);
+        border-radius: 12px;
+        border: 1px solid #1a3535;
+        margin-bottom: 25px;
+        overflow: hidden;
+    }
+    
+    .mode-selector {
+        position: relative;
+    }
+    
+    .mode-tab {
+        width: 100% !important;
+        min-height: 52px !important;
+        padding: 16px 20px !important;
+        font-size: 1em !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        color: #ccc !important;
+        text-align: left !important;
+        border-bottom: 1px solid #222;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .mode-tab:last-child {
+        border-bottom: none;
+    }
+    
+    .mode-tab.active {
+        background: linear-gradient(135deg, #162626 0%, #1f3333 100%) !important;
+        color: #00ff88 !important;
+        font-weight: 600;
+    }
+    
+    .mode-tab.active::after {
+        content: "▼";
+        font-size: 0.9em;
+        opacity: 0.7;
+    }
+    
+    .mode-selector.mobile-open .mode-tab.active::after {
+        content: "▲";
+    }
+    
+    .mode-tab-icon {
+        font-size: 1.2em;
+        margin-right: 10px;
+    }
+    
+    /* ============================================
+       MOBILE TIME SECTIONS
+       ============================================ */
+    
+    .time-content-section {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        border: 1px solid #1a3535 !important;
+        margin-bottom: 20px;
+        overflow: hidden !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .section-title {
+        font-size: 1.2em !important;
+        color: #fff !important;
+        font-weight: 600;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .section-icon {
+        font-size: 1.3em;
+    }
+    
+    /* ============================================
+       MOBILE UNIX TIMESTAMP SECTION
+       ============================================ */
+    
+    .unix-display {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 10px !important;
+        padding: 16px !important;
+        border: 1px solid #1a3535 !important;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .unix-timestamp {
+        font-size: 1.5em !important;
+        font-weight: 700;
+        color: #00ff88;
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: 6px;
+    }
+    
+    .unix-label {
+        font-size: 0.9em;
+        color: #888;
+    }
+    
+    .unix-input {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important; /* Prevent iOS zoom */
+        border: 2px solid #1a3535 !important;
+        border-radius: 10px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+        font-family: 'JetBrains Mono', monospace;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .unix-input:focus {
+        border-color: #00ff88 !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    }
+    
+    /* ============================================
+       MOBILE DISCORD TIMESTAMP SECTION
+       ============================================ */
+    
+    .discord-formats {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 20px;
+    }
+    
+    .discord-format {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border: 1px solid #1a3535 !important;
+        border-radius: 10px !important;
+        padding: 14px 16px !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .discord-format:hover,
+    .discord-format.active {
+        background: rgba(0, 255, 136, 0.1) !important;
+        border-color: #00ff88 !important;
+    }
+    
+    .discord-format-name {
+        font-size: 1em !important;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 6px;
+    }
+    
+    .discord-format-code {
+        font-size: 0.9em !important;
+        font-family: 'JetBrains Mono', monospace;
+        color: #00ff88;
+        background: #000;
+        padding: 4px 8px;
+        border-radius: 6px;
+        margin-bottom: 6px;
+    }
+    
+    .discord-format-preview {
+        font-size: 0.85em !important;
+        color: #888;
+    }
+    
+    .copy-discord-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        min-width: 36px !important;
+        min-height: 36px !important;
+        padding: 6px !important;
+        background: rgba(0, 255, 136, 0.2) !important;
+        border: 1px solid #00ff88 !important;
+        border-radius: 6px !important;
+        color: #00ff88 !important;
+        cursor: pointer;
+        font-size: 0.9em;
+        transition: all 0.3s ease;
+    }
+
+    .copy-discord-btn:hover,
+    .copy-discord-btn:active {
+        background: #00ff88 !important;
+        color: #000 !important;
+        transform: scale(0.95);
+    }
+    
+    /* ============================================
+       MOBILE TIMEZONE CONVERTER
+       ============================================ */
+    
+    .timezone-converter {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 10px !important;
+        padding: 16px !important;
+        border: 1px solid #1a3535 !important;
+        margin-bottom: 15px;
+    }
+
+    .timezone-input {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important;
+        border: 2px solid #1a3535 !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+        margin-bottom: 15px;
+    }
+
+    .timezone-input:focus {
+        border-color: #00ff88 !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    }
+    
+    .timezone-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .timezone-item {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border: 1px solid #1a3535 !important;
+        border-radius: 8px !important;
+        padding: 12px 14px !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .timezone-location {
+        font-size: 0.95em !important;
+        color: #ccc;
+        font-weight: 500;
+    }
+
+    .timezone-time {
+        font-size: 1em !important;
+        color: #00ff88;
+        font-weight: 600;
+        font-family: 'JetBrains Mono', monospace;
+    }
+    
+    /* ============================================
+       MOBILE MUSICAL TIME SECTION
+       ============================================ */
+    
+    .bpm-input-section {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 10px !important;
+        padding: 16px !important;
+        border: 1px solid #1a3535 !important;
+        margin-bottom: 15px;
+    }
+
+    .bpm-input {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important;
+        border: 2px solid #1a3535 !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+        text-align: center;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .bpm-input:focus {
+        border-color: #00ff88 !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    }
+    
+    .tempo-markings {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        margin-top: 15px;
+    }
+    
+    .tempo-btn {
+        min-height: 40px !important;
+        padding: 8px 12px !important;
+        font-size: 0.85em !important;
+        border-radius: 6px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #ccc !important;
+        border: 1px solid #1a3535 !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tempo-btn:hover,
+    .tempo-btn:active {
+        background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%) !important;
+        color: #000 !important;
+        border-color: #00ff88 !important;
+    }
+    
+    .metronome-display {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        border: 1px solid #1a3535 !important;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .metronome-bpm {
+        font-size: 2em !important;
+        font-weight: 700;
+        color: #00ff88;
+        margin-bottom: 8px;
+    }
+    
+    .metronome-label {
+        font-size: 0.9em;
+        color: #888;
+    }
+    
+    /* ============================================
+       MOBILE COUNTDOWN GENERATOR
+       ============================================ */
+    
+    .countdown-inputs {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+        margin-bottom: 20px;
+    }
+    
+    .datetime-input {
+        width: 100% !important;
+        min-height: 48px !important;
+        padding: 12px 16px !important;
+        font-size: 16px !important;
+        border: 2px solid #1a3535 !important;
+        border-radius: 8px !important;
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        color: #fff !important;
+    }
+
+    .datetime-input:focus {
+        border-color: #00ff88 !important;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.2);
+    }
+
+    .countdown-display {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border: 1px solid #1a3535 !important;
+        border-radius: 10px !important;
+        padding: 20px !important;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .countdown-time {
+        font-size: 1.8em !important;
+        font-weight: 700;
+        color: #00ff88;
+        font-family: 'JetBrains Mono', monospace;
+        margin-bottom: 8px;
+    }
+    
+    .countdown-label {
+        font-size: 0.9em;
+        color: #888;
+    }
+    
+    /* ============================================
+       MOBILE ACTION BUTTONS
+       ============================================ */
+    
+    .action-btn {
+        width: 100% !important;
+        min-height: 50px !important;
+        padding: 14px 20px !important;
+        font-size: 1em !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        border: none !important;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+    
+    .primary-action {
+        background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%) !important;
+        color: #000 !important;
+        box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+    }
+    
+    .secondary-action {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+    
+    .action-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    
+    .action-btn:active:not(:disabled) {
+        transform: translateY(0);
+    }
+    
+    .action-btn:disabled {
+        background: #333 !important;
+        color: #666 !important;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+    }
+    
+    /* ============================================
+       MOBILE COPY SUCCESS FEEDBACK
+       ============================================ */
+    
+    .copy-success-message {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 255, 136, 0.95) !important;
+        color: #000 !important;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-size: 0.9em;
+        font-weight: 600;
+        z-index: 1000;
+        animation: copyFeedback 2s ease;
+    }
+    
+    @keyframes copyFeedback {
+        0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+    }
+    
+    /* ============================================
+       MOBILE PLANETARY TIME SECTION
+       ============================================ */
+    
+    .planetary-times {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+    
+    .planet-time-card {
+        background: linear-gradient(135deg, #0f1c1c 0%, #162626 100%) !important;
+        border: 1px solid #1a3535 !important;
+        border-radius: 10px !important;
+        padding: 16px !important;
+        position: relative;
+    }
+
+    .planet-name {
+        font-size: 1.1em !important;
+        font-weight: 600;
+        color: #fff;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .planet-icon {
+        font-size: 1.3em;
+    }
+
+    .planet-time {
+        font-size: 1.2em !important;
+        color: #00ff88;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    
+    .planet-info {
+        font-size: 0.85em !important;
+        color: #888;
+        line-height: 1.4;
+    }
+    
+    /* ============================================
+       MOBILE UTILITY CLASSES
+       ============================================ */
+    
+    .mobile-hidden { display: none !important; }
+    .mobile-only { display: block !important; }
+    .mobile-center { text-align: center !important; }
+    .mobile-full-width { width: 100% !important; }
+}
